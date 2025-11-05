@@ -16,13 +16,17 @@ class PlanService:
     
     @staticmethod
     def actualizar(id : int, plan: Plan) -> Plan:
-        plan_existente = PlanRepository.buscar_por_id(plan.id)
+        """
+        Actualiza un plan existente usando merge directamente.
+        Issue: #3 - Simplificación del método actualizar usando merge
+        """
+        plan_existente = PlanRepository.buscar_por_id(id)
         if not plan_existente:
             return None
-        plan_existente.fecha_inicio = plan.fecha_inicio
-        plan_existente.fecha_fin = plan.fecha_fin
-        plan_existente.observacion = plan.observacion
-        return PlanRepository.actualizar(plan_existente)
+        
+        # Asignar el ID y usar merge (más simple que copiar campos manualmente)
+        plan.id = id
+        return PlanRepository.actualizar(plan)
     
     @staticmethod
     def borrar_por_id(id: int) -> bool:
