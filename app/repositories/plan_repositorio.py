@@ -6,14 +6,16 @@ class PlanRepository:
     def crear(plan):
         db.session.add(plan)
         db.session.commit()
-      
 
+    @staticmethod
     def buscar_por_id(id: int):
         return db.session.query(Plan).filter_by(id=id).first()
     
+    @staticmethod
     def buscar_todos():
         return db.session.query(Plan).all()
     
+    @staticmethod
     def actualizar(plan: Plan) -> Plan:
         db.session.merge(plan)
         db.session.commit()
