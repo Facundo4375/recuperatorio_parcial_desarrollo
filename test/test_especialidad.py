@@ -55,4 +55,53 @@ class EspecialidadTestCase(unittest.TestCase):
         resultado = EspecialidadService.buscar_por_id(especialidad.id)
         self.assertIsNone(resultado)
 
+    def test_obtener_alumnos_con_facultad(self):
+        """
+        Test TDD: Obtener todos los alumnos de una especialidad con su facultad.
+        Verifica que retorna JSON con alumnos y facultad.
+        """
+        from test.instancias import nuevoalumno, nuevafacultad
+        from datetime import date
+        
+        # Crear especialidad con facultad
+        facultad = nuevafacultad(nombre="Facultad de Ciencias", sigla="FC")
+        especialidad = nuevaespecialidad(nombre="Matemáticas", facultad=facultad)
+        
+        # Crear alumnos para la especialidad
+        alumno1 = nuevoalumno(
+            nombre="Juan",
+            apellido="Pérez",
+            nrodocumento="12345678",
+            especialidad=especialidad
+        )
+        alumno2 = nuevoalumno(
+            nombre="María",
+            apellido="Gómez",
+            nrodocumento="87654321",
+            especialidad=especialidad
+        )
+        
+        # Obtener alumnos con facultad
+        resultado = EspecialidadService.obtener_alumnos_con_facultad(especialidad.id)
+        
+        # Verificaciones
+        self.assertIsNotNone(resultado)
+        self.assertIn('alumnos', resultado)
+        self.assertIn('facultad', resultado)
+        
+        # Verificar alumnos
+        self.assertEqual(len(resultado['alumnos']), 2)
+        nombres_alumnos = [a['nombre'] for a in resultado['alumnos']]
+        self.assertIn("Juan", nombres_alumnos)
+        self.assertIn("María", nombres_alumnos)
+        
+        # Verificar facultad
+        self.assertEqual(resultado['facultad']['nombre'], "Facultad de Ciencias")
+        self.assertEqual(resultado['facultad']['sigla'], "FC")
+        
+        # Verificar que los alumnos tienen los datos correctos
+        alumno1_data = next(a for a in resultado['alumnos'] if a['nombre'] == "Juan")
+        self.assertEqual(alumno1_data['apellido'], "Pérez")
+        self.assertEqual(alumno1_data['nrodocumento'], "12345678")
+
     
