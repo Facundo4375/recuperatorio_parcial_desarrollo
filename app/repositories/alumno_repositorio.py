@@ -1,12 +1,10 @@
+"""
+Issue: #4 - Eliminación de método innecesario encontrar_id()
+"""
 from app import db
 from app.models import Alumno
 
 class AlumnoRepository:
-
-    @staticmethod
-    def encontrar_id(id):
-        encontrar = db.session.query(Alumno).filter_by(id=id).first()
-        return encontrar
 
     @staticmethod
     def crear(alumno):
@@ -15,7 +13,7 @@ class AlumnoRepository:
 
     @staticmethod
     def buscar_por_id(id: int):
-        return AlumnoRepository.encontrar_id(id)
+        return db.session.query(Alumno).filter_by(id=id).first()
     
     @staticmethod
     def buscar_todos():
@@ -29,7 +27,7 @@ class AlumnoRepository:
     
     @staticmethod
     def borrar_por_id(id: int) -> bool:
-        alumno = AlumnoRepository.encontrar_id(id)
+        alumno = db.session.query(Alumno).filter_by(id=id).first()
         if not alumno:
             return False
         db.session.delete(alumno)
